@@ -1,10 +1,10 @@
-import HeroSection from "./components/HeroSection";
-import AboutSection from "./components/AboutSection";
-import ProjectsSection from "./components/ProjectsSection";
-import ContactSection from "./components/ContactSection";
-import ScrollProgress from "./components/ui/ScrollProgress"
-import Navbar from "./components/Navbar/Navbar"
-import MagneticCursor from "./components/ui/MagneticCursor"
+import HeroSection from "@/components/HeroSection";
+import AboutSection from "@/components/AboutSection";
+import ProjectsSection from "@/components/ProjectsSection";
+import ContactSection from "@/components/ContactSection";
+import ScrollProgress from "@/components/ScrollProgress"
+import Navbar from "@/components/Navbar/Navbar"
+import MagneticCursor from "@/components/MagneticCursor"
 
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
     <>
     <Navbar />
       <ScrollProgress />
-      <MagneticCursor />
+      {/* <MagneticCursor /> */}
       <main>
         <HeroSection />
         <AboutSection />
