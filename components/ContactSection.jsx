@@ -3,6 +3,9 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import GlobeDemo from "../components/GlobeDemo";
+import { memo } from "react";
+
+const GlobeMemo = memo(GlobeDemo);
 
 
 export default function ContactSection() {
@@ -78,10 +81,11 @@ export default function ContactSection() {
           </motion.div>
         )}
       </div>
-      {/* Add globe */}
-      <div className="absolute inset-0 pointer-events-none">
-        <GlobeDemo />
-      </div>
+
+      {/* Globe background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <GlobeMemo />
+      </div>      
       {/* Optional floating orb or planet */}
       <motion.div
         className="absolute bottom-10 right-10 z-0 w-32 h-32 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-600 opacity-50 blur-2xl animate-pulse"
