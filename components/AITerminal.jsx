@@ -12,8 +12,6 @@ const responses = {
 
 const introLines = [
   "🪐 Booting AI interface...",
-  "🔭 Calibrating starfield...",
-  "🚀 Welcome aboard, Captain Koketso.",
   "Type `help` to get started.",
 ];
 
