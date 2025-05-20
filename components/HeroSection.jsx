@@ -3,10 +3,10 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import GalaxyPoint from "../components/GalaxyCanvas/GalaxyPoints"; // ✅ new import
+import GalaxyPoint from "../components/GalaxyCanvas/GalaxyPoints";
 import { useEffect, useState } from 'react';
 import AITerminal from "../components/AITerminal";
-import GalaxyCard from "../components/GalaxyCanvas/GalaxyCard"; // ✅ new import
+import GalaxyCard from "../components/GalaxyCanvas/GalaxyCard";
 
 export default function HeroSection() {
   const [fade, setFade] = useState(0);
@@ -21,53 +21,59 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black flex items-center justify-center px-4">
-      {/* Galaxy Background */}
-      <Canvas className="absolute top-0 left-0 w-full h-full z-0" camera={{ position: [0, 0, 2] }}>
-        <GalaxyPoint />
-        <OrbitControls enableZoom={false} enablePan={false} />
-      </Canvas>
+<section className="relative h-screen w-full overflow-hidden bg-black">
+  {/* ⭐ FIXED Galaxy Background */}
+  <div className="absolute inset-0 z-0">
+    <Canvas className="w-full h-full" camera={{ position: [0, 0, 2] }}>
+      <GalaxyPoint />
+      <OrbitControls enableZoom={false} enablePan={false} />
+    </Canvas>
+  </div>
 
-      {/* GalaxyCard with welcome and terminal */}
-      <GalaxyCard>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-6"
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold drop-shadow-[0_0_10px_#ffffffaa]">
-            Welcome to My Galaxy
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-300 mt-2">
-            Hi, I'm Koketso — a creative frontend developer exploring new frontiers in web design.
-          </p>
-        </motion.div>
+  {/* 🌌 Scroll Fade Overlay */}
+  <div
+    className="pointer-events-none absolute inset-0 z-10 bg-black transition-opacity duration-300"
+    style={{ opacity: fade }}
+  />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-        >
-          <AITerminal />
-        </motion.div>
-      </GalaxyCard>
-
-      {/* Scroll Hint */}
+  {/* 💡 Scrollable Content Layer */}
+  <div className="relative z-30 flex flex-col items-center px-4 pt-32 sm:pt-40">
+    <GalaxyCard>
       <motion.div
-        className="absolute bottom-6 z-10 text-white text-2xl animate-bounce"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-6"
       >
-        ↓
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold drop-shadow-[0_0_10px_#ffffffaa]">
+          Welcome to My Galaxy
+        </h1>
+        <p className="text-lg sm:text-xl text-gray-300 mt-2">
+          Hi, I'm Koketso — a creative frontend developer exploring new frontiers in web design.
+        </p>
       </motion.div>
 
-      {/* Scroll Fade */}
-      <div
-        className="pointer-events-none absolute inset-0 z-20 bg-black transition-opacity duration-300"
-        style={{ opacity: fade }}
-      />
-    </section>
-  );
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mt-12 w-full max-w-2xl"
+      >
+        <AITerminal />
+    </motion.div>
+    </GalaxyCard>
+
+
+  </div>
+
+  {/* 🔻 Scroll Hint */}
+  <motion.div
+    className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 text-white text-2xl animate-bounce"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 1 }}
+  >
+    ↓
+  </motion.div>
+</section>  );
 }
