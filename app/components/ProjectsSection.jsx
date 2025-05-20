@@ -1,7 +1,10 @@
 'use client';
+
 import { motion } from 'framer-motion';
 import { FiLock } from 'react-icons/fi';
 import { SiReact, SiThreejs, SiVuedotjs } from 'react-icons/si';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { useState } from 'react';
 
 const projects = [
   {
@@ -15,12 +18,14 @@ const projects = [
     title: 'Textile Inventory System',
     description: 'Vue-based platform for tracking production and logistics.',
     icon: <SiVuedotjs className="h-6 w-6 text-green-500" />,
-    link: null, // Now treated as private
+    link: null, // Trigger modal
     tags: ['Vue.js', 'Firebase', 'Tailwind CSS'],
   },
 ];
 
 export default function ProjectsSection() {
+  const [selectedProject, setSelectedProject] = useState(null);
+
   return (
     <section className="min-h-screen bg-gray-100 text-black px-8 py-20">
       <motion.div
@@ -43,7 +48,6 @@ export default function ProjectsSection() {
                 whileHover={{ scale: 1.03 }}
                 className="relative group p-6 bg-white shadow-lg rounded-xl border overflow-hidden transition-all"
               >
-                {/* Glitch Effect on Hover */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none z-10">
                   <div className="w-full h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-glitch" />
                 </div>
@@ -53,52 +57,58 @@ export default function ProjectsSection() {
                   <h3 className="text-2xl font-semibold">{project.title}</h3>
                 </div>
 
-                <p className="text-md mt-3 relative z-20 text-gray-700">
-                  {project.description}
-                </p>
+                <p className="text-md mt-3 relative z-20 text-gray-700">{project.description}</p>
 
                 <div className="mt-4 flex flex-wrap gap-2 text-sm relative z-20">
                   {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-gray-200 text-gray-600 px-2 py-1 rounded-md"
-                    >
+                    <span key={tag} className="bg-gray-200 text-gray-600 px-2 py-1 rounded-md">
                       #{tag}
                     </span>
                   ))}
                 </div>
               </motion.a>
             ) : (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.03 }}
-                className="relative group p-6 bg-white shadow-lg rounded-xl border overflow-hidden opacity-80 cursor-not-allowed transition-all"
-              >
-                <div className="relative z-20 flex items-center gap-4">
-                  <div className="p-2 rounded-full bg-gray-100 border">{project.icon}</div>
-                  <h3 className="text-2xl font-semibold">{project.title}</h3>
-                </div>
+              <Dialog key={index}>
+                <DialogTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    className="relative group p-6 bg-white shadow-lg rounded-xl border overflow-hidden opacity-90 cursor-pointer transition-all"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    <div className="relative z-20 flex items-center gap-4">
+                      <div className="p-2 rounded-full bg-gray-100 border">{project.icon}</div>
+                      <h3 className="text-2xl font-semibold">{project.title}</h3>
+                    </div>
 
-                <p className="text-md mt-3 relative z-20 text-gray-700">
-                  {project.description}
-                </p>
+                    <p className="text-md mt-3 relative z-20 text-gray-700">{project.description}</p>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-sm relative z-20">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-gray-200 text-gray-600 px-2 py-1 rounded-md"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
+                    <div className="mt-4 flex flex-wrap gap-2 text-sm relative z-20">
+                      {project.tags.map((tag) => (
+                        <span key={tag} className="bg-gray-200 text-gray-600 px-2 py-1 rounded-md">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
 
-                <div className="mt-4 text-xs text-gray-500 flex items-center gap-1 relative z-20">
-                  <FiLock className="h-4 w-4" />
-                  Private Repository
-                </div>
-              </motion.div>
+                    <div className="mt-4 text-xs text-gray-500 flex items-center gap-1 relative z-20">
+                      <FiLock className="h-4 w-4" />
+                      Private Repository
+                    </div>
+                  </motion.div>
+                </DialogTrigger>
+
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{selectedProject?.title}</DialogTitle>
+                    <DialogDescription>
+                      This project is currently private and not publicly accessible.
+                      <br />
+                      <br />
+                      You may contact me directly for access, collaboration, or a walkthrough.
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             )
           )}
         </div>
