@@ -3,7 +3,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import { useRef, useMemo, useEffect, useState } from 'react';
-import * as THREE from 'three';
+import type * as THREE from 'three';
 
 export default function GalaxyPoint() {
   const starsRef = useRef<THREE.Points>(null);
