@@ -37,7 +37,7 @@ export default function HeroSection() {
   />
 
   {/* 💡 Scrollable Content Layer */}
-  <div className="relative z-30 flex flex-col items-center px-4 pt-32 sm:pt-40">
+  <div className="relative z-30 flex items-center justify-center h-full px-4">
     <GalaxyCard>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
