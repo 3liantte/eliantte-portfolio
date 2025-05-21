@@ -1,3 +1,5 @@
+'use client';
+
 import { useFrame, useThree } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import { useRef, useMemo, useEffect, useState } from 'react';
@@ -9,52 +11,43 @@ export default function GalaxyPoint() {
   const { camera } = useThree();
   const [scrollY, setScrollY] = useState(0);
 
-  // 📌 Scroll tracking
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+    const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-// 🌌 Gradient Starfield: Color fades from purple → blue → white based on Y position
-const [starData] = useMemo(() => {
-  const positions = new Float32Array(10000 * 3);
-  const colors = new Float32Array(10000 * 3);
+  // 🌌 Generate starfield with gradient colors
+  const [starData] = useMemo(() => {
+    const positions = new Float32Array(10000 * 3);
+    const colors = new Float32Array(10000 * 3);
 
-  const colorA = new THREE.Color("#a855f7"); // purple
-  const colorB = new THREE.Color("#06b6d4"); // cyan-blue
-  const colorC = new THREE.Color("#ffffff"); // white
+    const colorA = new THREE.Color("#a855f7"); // Purple
+    const colorB = new THREE.Color("#06b6d4"); // Cyan
+    const colorC = new THREE.Color("#ffffff"); // White
 
-  const mix = (c1: THREE.Color, c2: THREE.Color, factor: number) => c1.clone().lerp(c2, factor);
+    const mix = (c1: THREE.Color, c2: THREE.Color, factor: number) => c1.clone().lerp(c2, factor);
 
-  for (let i = 0; i < 10000; i++) {
-    const i3 = i * 3;
-    const x = (Math.random() - 0.5) * 100;
-    const y = (Math.random() - 0.5) * 100;
-    const z = (Math.random() - 0.5) * 100;
+    for (let i = 0; i < 10000; i++) {
+      const i3 = i * 3;
+      const x = (Math.random() - 0.5) * 100;
+      const y = (Math.random() - 0.5) * 100;
+      const z = (Math.random() - 0.5) * 100;
 
-    positions[i3] = x;
-    positions[i3 + 1] = y;
-    positions[i3 + 2] = z;
+      positions[i3] = x;
+      positions[i3 + 1] = y;
+      positions[i3 + 2] = z;
 
-    // Normalize Y position to 0–1 and blend colors
-    const t = (y + 50) / 100;
-    let blended;
-    if (t < 0.5) {
-      blended = mix(colorA, colorB, t * 2);  // purple to blue
-    } else {
-      blended = mix(colorB, colorC, (t - 0.5) * 2); // blue to white
+      const t = (y + 50) / 100;
+      const blended = t < 0.5 ? mix(colorA, colorB, t * 2) : mix(colorB, colorC, (t - 0.5) * 2);
+
+      colors[i3] = blended.r;
+      colors[i3 + 1] = blended.g;
+      colors[i3 + 2] = blended.b;
     }
 
-    colors[i3] = blended.r;
-    colors[i3 + 1] = blended.g;
-    colors[i3 + 2] = blended.b;
-  }
-
-  return [{ positions, colors }];
-}, []);
+    return [{ positions, colors }];
+  }, []);
 
   // 🌠 Shooting stars
   const shootingStars = useRef<Float32Array>(new Float32Array(30 * 3));
@@ -74,8 +67,9 @@ const [starData] = useMemo(() => {
     camera.position.z = 2 + scrollY * 0.003;
 
     if (starsRef.current) {
-      starsRef.current.rotation.x = elapsed * 0.02 + scrollY * 0.0002;
-      starsRef.current.rotation.y = elapsed * 0.02 + scrollY * 0.0002;
+      const rotation = elapsed * 0.02 + scrollY * 0.0002;
+      starsRef.current.rotation.x = rotation;
+      starsRef.current.rotation.y = rotation;
     }
 
     if (shootingStarsRef.current) {
@@ -95,21 +89,21 @@ const [starData] = useMemo(() => {
 
   return (
     <>
-      {/* 🌌 Colorful Galaxy Stars */}
+      {/* 🌌 Galaxy Stars */}
       <points ref={starsRef} frustumCulled>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={starData.positions.length / 3}
             array={starData.positions}
-            itemSize={3}
-          />
+            count={starData.positions.length / 3}
+            itemSize={3} args={[starData.positions, 3]}
+            />
           <bufferAttribute
             attach="attributes-color"
-            count={starData.colors.length / 3}
             array={starData.colors}
-            itemSize={3}
-          />
+            count={starData.colors.length / 3}
+            itemSize={3} args={[starData.colors, 3]}
+            />
         </bufferGeometry>
         <PointMaterial
           vertexColors
@@ -126,10 +120,10 @@ const [starData] = useMemo(() => {
         <bufferGeometry ref={shootingStarsRef}>
           <bufferAttribute
             attach="attributes-position"
-            count={shootingColors.length / 3}
             array={shootingColors}
-            itemSize={3}
-          />
+            count={shootingColors.length / 3}
+            itemSize={3} args={[shootingColors, 3]}
+            />
         </bufferGeometry>
         <PointMaterial
           transparent
