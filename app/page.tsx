@@ -5,6 +5,7 @@ import ContactSection from "@/components/ContactSection";
 import ScrollProgress from "@/components/ScrollProgress"
 import Navbar from "@/components/Navbar/Navbar"
 import MagneticCursor from "@/components/MagneticCursor"
+import Footer from "@/components/Footer"
 
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
         <ProjectsSection />
         <ContactSection />
       </main>
+    <Footer/>
     </>
   );
 }
