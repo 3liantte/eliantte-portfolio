@@ -27,7 +27,7 @@ const [starData] = useMemo(() => {
   const colorB = new THREE.Color("#06b6d4"); // cyan-blue
   const colorC = new THREE.Color("#ffffff"); // white
 
-  const mix = (c1, c2, factor) => c1.clone().lerp(c2, factor);
+  const mix = (c1: THREE.Color, c2: THREE.Color, factor: number) => c1.clone().lerp(c2, factor);
 
   for (let i = 0; i < 10000; i++) {
     const i3 = i * 3;
