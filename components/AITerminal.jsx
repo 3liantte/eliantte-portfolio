@@ -1,71 +1,77 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { Button } from './ui/button';
 
 export default function AITerminal() {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [mode, setMode] = useState('normal');
   const terminalRef = useRef(null);
-  const introIndex = useRef(0);
-
-  // ⏱ Initial AI boot messages
-  const introLines = [
-    "🪐 Booting AI interface...",
-    "Type anything to ask your assistant.",
-  ];
 
   useEffect(() => {
-    const typeIntro = () => {
-      if (introIndex.current < introLines.length) {
-        const line = introLines[introIndex.current];
-        setTimeout(() => {
-          setLines((prev) => [...prev, `> ${line}`]);
-          introIndex.current += 1;
-          typeIntro();
-        }, 800);
-      } else {
-        setIsTyping(false);
-      }
+    const welcome = [
+      '> Type anything to ask your assistant.',
+      '> You can also say "funny mode", "devmode", or "normal mode" to switch personalities.',
+    ];
+    setLines(welcome);
+  }, []);
+
+  useEffect(() => {
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
     };
-    typeIntro();
+    window.startVoiceInput = () => recognition.start();
   }, []);
 
   const handleCommand = async () => {
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    // 🧾 Print user input to terminal
-    const newLines = [...lines, `> ${input}`];
-    setLines(newLines);
+    // Handle mode switching
+    if (trimmed.toLowerCase().includes('mode')) {
+      const newMode = trimmed.toLowerCase().includes('funny')
+        ? 'funny'
+        : trimmed.toLowerCase().includes('dev')
+        ? 'dev'
+        : 'normal';
+      setMode(newMode);
+      setLines((prev) => [...prev, `> ${trimmed}`, `> Personality switched to ${newMode}`]);
+      setInput('');
+      return;
+    }
+
+    const newHistory = [...history, { role: 'user', content: trimmed }];
+    setLines((prev) => [...prev, `> ${trimmed}`]);
     setInput('');
-    setLoading(true);
+    setIsTyping(true);
 
     try {
       const res = await fetch('/api', {
         method: 'POST',
-        body: JSON.stringify({ prompt: trimmed }),
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newHistory, mode }),
       });
 
       const data = await res.json();
-      const reply = data.reply;
+      const reply = data.reply || "🤖 I couldn't generate a response.";
 
-      // 🧠 Optional: type character-by-character effect
-      let typed = '';
-      for (let i = 0; i < reply.length; i++) {
-        typed += reply[i];
-        setLines([...newLines, `> ${typed}`]);
-        await new Promise((resolve) => setTimeout(resolve, 15)); // typing delay
-      }
+      setHistory([...newHistory, { role: 'assistant', content: reply }]);
+      setLines((prev) => [...prev, `> ${reply}`]);
     } catch (err) {
-      setLines([...newLines, "> ⚠️ Error contacting AI."]);
+      setLines((prev) => [...prev, '> ⚠️ AI Error.']);
+    } finally {
+      setIsTyping(false);
+      setTimeout(() => {
+        terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight);
+      }, 100);
     }
-
-    setLoading(false);
-    setTimeout(() => {
-      terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight);
-    }, 100);
   };
 
   return (
@@ -78,23 +84,17 @@ export default function AITerminal() {
         // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
       <div key={i} className="whitespace-pre-wrap">{line}</div>
       ))}
-
-      {!isTyping && !loading && (
-        <div className="flex mt-2">
-          <span className="mr-2">{'>'}</span>
-          <input
-            className="flex-grow bg-transparent outline-none text-green-400 caret-green-400"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCommand()}
-          />
-          <span className="ml-1 animate-blink text-green-400">_</span>
-        </div>
-      )}
-
-      {loading && (
-        <div className="mt-2 text-green-500 animate-pulse"> Thinking...</div>
-      )}
+      <div className="flex mt-2 items-center">
+        <span className="mr-2">{'>'}</span>
+        <input
+          className="flex-grow bg-transparent outline-none text-green-400 caret-green-400"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleCommand()}
+        />
+        <Button onClick={() => window.startVoiceInput()} className="ml-2 text-xs text-cyan-400">🎙️ Speak</Button>
+        {isTyping && <span className="ml-2 animate-pulse text-xs">...thinking</span>}
+      </div>
     </div>
   );
 }
