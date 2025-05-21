@@ -1,4 +1,3 @@
-
 'use client';
 
 import { motion } from 'framer-motion';
@@ -6,7 +5,7 @@ import { FiLock, FiUnlock } from 'react-icons/fi';
 import { SiReact, SiNextdotjs } from 'react-icons/si';
 import { MdFactory, MdLocalHospital, MdBusinessCenter } from 'react-icons/md';
 import { FaGithub } from 'react-icons/fa';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Dialog,
@@ -63,60 +62,93 @@ const projects = [
 
 export default function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState(null);
+  const [stars, setStars] = useState([]);
+
+  useEffect(() => {
+    const colors = ['white', 'blue', 'purple'];
+    const generated = Array.from({ length: 50 }, () => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      color: colors[Math.floor(Math.random() * colors.length)],
+    }));
+    setStars(generated);
+  }, []);
 
   return (
-    <section className="min-h-screen bg-gray-100 text-black px-8 py-20">
+    <section className="relative min-h-screen bg-black text-white px-8 py-20 overflow-hidden">
+      {/* 🌌 Twinkling Star Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {stars.map((star, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              top: star.top,
+              left: star.left,
+              width: '2px',
+              height: '2px',
+              backgroundColor: star.color,
+              animation: 'twinkle 3s infinite',
+              animationDelay: star.animationDelay,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ✨ Glow Overlay */}
+      <div className="absolute bg-transparent" />
+
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="max-w-4xl mx-auto"
+        className="max-w-4xl mx-auto relative z-10"
       >
         <h2 className="text-4xl font-bold mb-12 text-center">Projects</h2>
 
         <div className="grid gap-10 md:grid-cols-2">
           {projects.map((project, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             <Dialog key={index}>
               <DialogTrigger asChild>
                 <motion.div
                   whileHover={{ scale: 1.03 }}
-                  className="relative group p-6 bg-white shadow-lg rounded-xl border overflow-hidden cursor-pointer transition-all"
+                  className="relative group p-6 bg-white/5 shadow-lg rounded-xl border border-white/10 backdrop-blur cursor-pointer transition-all"
                   onClick={() => setSelectedProject(project)}
                 >
                   <div className="relative z-20 flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-gray-100 border">{project.icon}</div>
+                    <div className="p-2 rounded-full bg-gray-800 border">{project.icon}</div>
                     <h3 className="text-2xl font-semibold">{project.title}</h3>
                   </div>
 
-                  <p className="text-md mt-3 relative z-20 text-gray-700">{project.description}</p>
+                  <p className="text-md mt-3 text-gray-300">{project.description}</p>
 
-                  <div className="mt-4 flex flex-wrap gap-2 text-sm relative z-20">
+                  <div className="mt-4 flex flex-wrap gap-2 text-sm">
                     {project.tags.map((tag) => (
-                      <span key={tag} className="bg-gray-200 text-gray-600 px-2 py-1 rounded-md">
+                      <span key={tag} className="bg-gray-700 text-gray-200 px-2 py-1 rounded-md">
                         #{tag}
                       </span>
                     ))}
                   </div>
-                    
+
                   {!project.link && (
-                    <div className="mt-4 text-xs text-gray-500 flex items-center gap-1 relative z-20">
+                    <div className="mt-4 text-xs text-gray-500 flex items-center gap-1">
                       <FiLock className="h-4 w-4" />
                       Private Repository
                     </div>
                   )}
                   {project.link && (
-                    <div className="mt-4 text-xs text-green-500 flex items-center gap-1 relative z-20">
-                      <FiUnlock className="h-4 w-4" />
-                      Open Source
-                    </div>
-                  )}
-                  {project.link && (
-                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full bg-green-100 text-green-800 text-[10px] sm:text-xs font-semibold shadow-lg animate-glow">
-                      <FaGithub className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="hidden xs:inline">Open Source</span>
-                    </div>
+                    <>
+                      <div className="mt-4 text-xs text-green-500 flex items-center gap-1">
+                        <FiUnlock className="h-4 w-4" />
+                        Open Source
+                      </div>
+                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full bg-green-100 text-green-800 text-[10px] sm:text-xs font-semibold shadow-lg animate-glow">
+                        <FaGithub className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="hidden xs:inline">Open Source</span>
+                      </div>
+                    </>
                   )}
                 </motion.div>
               </DialogTrigger>
@@ -145,49 +177,49 @@ export default function ProjectsSection() {
 
                   {project.link ? (
                     <>
-                  <DialogDescription className="text-gray-500 text-center mb-4">
-                    This project is public. You can view the live demo or check out the source code.
-                  </DialogDescription>
+                      <DialogDescription className="text-gray-500 text-center mb-4">
+                        This project is public. You can view the live demo or check out the source code.
+                      </DialogDescription>
 
-                  <div className="flex gap-4 flex-wrap justify-center">
-                    <TooltipProvider>
-                      {project.sourceCode && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <a
-                              href={project.sourceCode}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800 transition"
-                            >
-                              View Source Code
-                            </a>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>View the GitHub repository</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
+                      <div className="flex gap-4 flex-wrap justify-center">
+                        <TooltipProvider>
+                          {project.sourceCode && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a
+                                  href={project.sourceCode}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800 transition"
+                                >
+                                  View Source Code
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>View the GitHub repository</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
 
-                      {project.demo && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <a
-                              href={project.demo}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
-                            >
-                              Visit Website
-                            </a>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Visit the live deployed site</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
-                    </TooltipProvider>
-                  </div>
+                          {project.demo && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a
+                                  href={project.demo}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                                >
+                                  Visit Website
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Visit the live deployed site</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </TooltipProvider>
+                      </div>
                     </>
                   ) : (
                     <>
