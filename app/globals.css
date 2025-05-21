@@ -78,3 +78,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
+  }
+  50% {
+    box-shadow: 0 0 10px #16a34a, 0 0 20px #16a34a;
+  }
+}
+
+.animate-glow {
+  animation: glow 2.5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 9999px;
+  animation: twinkle 3s infinite ease-in-out;
+  opacity: 0.3;
+}
+.star.white { background: #ffffff; }
+.star.blue { background: #38bdf8; }   /* cyan-400 */
+.star.purple { background: #c084fc; } /* purple-400 */
