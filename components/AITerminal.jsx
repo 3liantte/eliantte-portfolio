@@ -1,45 +1,29 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 
-const responses = {
-  help: "Available commands: about, projects, contact, clear, devmode",
-  about: "I'm Koketso, a creative frontend developer focused on immersive web experiences.",
-  projects: "Recent: Parallax Portfolio, Inventory Manager, Forex Bot.",
-  contact: 'You can reach me at koketso@example.com.',
-  clear: " ",
-  devmode: "[🔧] Developer mode activated. Accessing advanced systems...",
-};
-
-const introLines = [
-  "🪐 Booting AI interface...",
-  "Type `help` to get started.",
-];
-
-const funAIReplies = [
-  "🤖 I'm not sure, but it sounds important!",
-  "👽 That's classified, Captain.",
-  "💡 Interesting question. Let me think...",
-  "🛸 Sorry, my neural circuits didn't catch that.",
-  "🔮 That might be a question for future-me.",
-  "📡 Signal lost... please try again.",
-];
-
 export default function AITerminal() {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(true);
+  const [loading, setLoading] = useState(false);
   const terminalRef = useRef(null);
-  const index = useRef(0);
+  const introIndex = useRef(0);
+
+  // ⏱ Initial AI boot messages
+  const introLines = [
+    "🪐 Booting AI interface...",
+    "Type anything to ask your assistant.",
+  ];
 
   useEffect(() => {
     const typeIntro = () => {
-      if (index.current < introLines.length) {
-        const line = introLines[index.current];
+      if (introIndex.current < introLines.length) {
+        const line = introLines[introIndex.current];
         setTimeout(() => {
           setLines((prev) => [...prev, `> ${line}`]);
-          index.current += 1;
+          introIndex.current += 1;
           typeIntro();
-        }, 1000);
+        }, 800);
       } else {
         setIsTyping(false);
       }
@@ -47,30 +31,41 @@ export default function AITerminal() {
     typeIntro();
   }, []);
 
-  const handleCommand = () => {
-    const trimmed = input.trim().toLowerCase();
+  const handleCommand = async () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-    let output;
-    if (responses.hasOwnProperty(trimmed)) {
-      output = responses[trimmed];
-    } else {
-      // return a random AI-style fun answer
-      const randIndex = Math.floor(Math.random() * funAIReplies.length);
-      output = funAIReplies[randIndex];
+    // 🧾 Print user input to terminal
+    const newLines = [...lines, `> ${input}`];
+    setLines(newLines);
+    setInput('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api', {
+        method: 'POST',
+        body: JSON.stringify({ prompt: trimmed }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await res.json();
+      const reply = data.reply;
+
+      // 🧠 Optional: type character-by-character effect
+      let typed = '';
+      for (let i = 0; i < reply.length; i++) {
+        typed += reply[i];
+        setLines([...newLines, `> ${typed}`]);
+        await new Promise((resolve) => setTimeout(resolve, 15)); // typing delay
+      }
+    } catch (err) {
+      setLines([...newLines, "> ⚠️ Error contacting AI."]);
     }
 
-    const newLines = [
-      ...lines,
-      `> ${input}`,
-      ...(trimmed === 'clear' ? [] : [`> ${output}`]),
-    ];
-
-    setLines(trimmed === 'clear' ? ['> AI Terminal Reinitialized'] : newLines);
-    setInput('');
-
+    setLoading(false);
     setTimeout(() => {
       terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight);
-    }, 50);
+    }, 100);
   };
 
   return (
@@ -80,10 +75,11 @@ export default function AITerminal() {
       ref={terminalRef}
     >
       {lines.map((line, i) => (
-        <div key={i} className="whitespace-pre-wrap">{line}</div>
+        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+      <div key={i} className="whitespace-pre-wrap">{line}</div>
       ))}
 
-      {!isTyping && (
+      {!isTyping && !loading && (
         <div className="flex mt-2">
           <span className="mr-2">{'>'}</span>
           <input
@@ -91,10 +87,13 @@ export default function AITerminal() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCommand()}
-            autoFocus
           />
           <span className="ml-1 animate-blink text-green-400">_</span>
         </div>
+      )}
+
+      {loading && (
+        <div className="mt-2 text-green-500 animate-pulse"> Thinking...</div>
       )}
     </div>
   );
