@@ -89,7 +89,7 @@
 }
 
 .animate-glow {
-  animation: glow 2.5s ease-in-out infinite;
+  animation: glow 4.5s ease-in-out infinite;
 }
 
 @keyframes twinkle {
@@ -114,3 +114,7 @@
 .star.white { background: #ffffff; }
 .star.blue { background: #38bdf8; }   /* cyan-400 */
 .star.purple { background: #c084fc; } /* purple-400 */
+
+html {
+  scroll-behavior: smooth;
+}
