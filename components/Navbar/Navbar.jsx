@@ -1,35 +1,70 @@
-'use client';
-import { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
+import { FloatingNav } from "../ui/floating-navbar";
+import { FolderOpen, FolderOpenDot, House, MessageCircle, MessageCircleDashed, MessageCircleMore, User } from "lucide-react";
 
-export default function Navbar() {
-  const [visible, setVisible] = useState(true);
-  let lastScrollY = 0;
+const SECTIONS = ["home", "about", "projects", "contact"];
+
+export function FloatingNavDemo() {
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setVisible(currentScrollY < lastScrollY || currentScrollY < 50);
-      lastScrollY = currentScrollY;
+      let closest = "home";
+      let minDistance = Number.POSITIVE_INFINITY;
+
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      SECTIONS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const offset = Math.abs(rect.top);
+          if (offset < minDistance && rect.top < window.innerHeight) {
+            minDistance = offset;
+            closest = id;
+          }
+        }
+      });
+
+      setActiveSection(closest);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navItems = [
+    {
+      name: "Home",
+      link: "#home",
+      icon: <House className="h-4 w-4" />,
+      active: activeSection === "home",
+    },
+    {
+      name: "About",
+      link: "#about",
+      icon: <User className="h-4 w-4" />,
+      active: activeSection === "about",
+    },
+    {
+      name: "Projects",
+      link: "#projects",
+      icon: <FolderOpenDot className="h-4 w-4" />,
+      active: activeSection === "projects",
+    },
+    {
+      name: "Contact",
+      link: "#contact",
+      icon: <MessageCircleMore className="h-4 w-4" />,
+      active: activeSection === "contact",
+    },
+  ];
+
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ${
-        visible ? 'translate-y-0' : '-translate-y-full'
-      } bg-black/80 backdrop-blur-md text-white`}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <span className="text-xl font-bold">Koketso.dev</span>
-        <div className="space-x-6">
-          <a href="#about" data-cursor className="hover:text-blue-400 transition">About</a>
-          <a href="#projects" className="hover:text-blue-400 transition">Projects</a>
-          <a href="#contact" className="hover:text-blue-400 transition">Contact</a>
-        </div>
-      </div>
-    </nav>
+    <div className="relative w-full">
+      <FloatingNav navItems={navItems} />
+    </div>
   );
 }
