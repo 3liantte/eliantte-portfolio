@@ -3,17 +3,14 @@ import AboutSection from "@/components/AboutSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
 import ScrollProgress from "@/components/ScrollProgress"
-import Navbar from "@/components/Navbar/Navbar"
-import MagneticCursor from "@/components/MagneticCursor"
 import Footer from "@/components/Footer"
 
 
 export default function Home() {
   return (
     <>
-    <Navbar />
+    {/* <NavbarDemo /> */}
       <ScrollProgress />
-      {/* <MagneticCursor /> */}
       <main>
         <HeroSection />
         <AboutSection />
