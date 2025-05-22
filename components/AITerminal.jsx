@@ -148,16 +148,6 @@ useEffect(() => {
           {status === 'typing' && <span className="ml-2 animate-pulse text-xs">...typing</span>}
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        .animate-blink {
-          animation: blink 1s step-start infinite;
-        }
-      `}</style>
     </div>
   );
 }
