@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { FiLock, FiUnlock } from 'react-icons/fi';
-import { SiReact, SiNextdotjs } from 'react-icons/si';
+import { SiReact, SiNextdotjs, SiHtml5 } from 'react-icons/si';
 import { MdFactory, MdLocalHospital, MdBusinessCenter } from 'react-icons/md';
 import { FaGithub } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
@@ -39,25 +39,68 @@ const industryStyles = {
 
 const projects = [
   {
-    title: '3D Parallax Portfolio',
-    description: 'A creative animated portfolio built with React Three Fiber.',
+    title: "3D Parallax Portfolio",
+    description: "A creative animated portfolio built with React Three Fiber.",
     icon: <SiReact className="h-6 w-6 text-blue-500" />,
-    link: 'https://your-portfolio-link.com',
-    sourceCode: 'https://github.com/koketso/galaxy-portfolio',
-    demo: 'https://koketso.dev',
-    tags: ['React', 'Three.js', 'Framer Motion'],
-    industry: { label: 'Personal Branding', category: 'personal' },
+    link: "https://your-portfolio-link.com",
+    sourceCode: "https://github.com/koketso/galaxy-portfolio",
+    demo: "https://koketso.dev",
+    tags: ["React", "Three.js", "Framer Motion"],
+    industry: { label: "Personal Branding", category: "personal" },
   },
   {
-    title: 'Helm Textile Mills',
-    description: 'Vue-based platform for tracking production and logistics.',
-    icon: <SiNextdotjs className="h-6 w-6 text-black" />,
+    title: "Helm Textile Mills",
+    description: "Vue-based platform for tracking production and logistics.",
+    icon: <SiNextdotjs className="h-6 w-6 text-white" />,
     link: null,
-    externalLink: 'https://helmtex.co.za',
-    clientLogo: '/logos/helmlogo.png',
-    tags: ['Vue.js', 'Firebase', 'Tailwind CSS'],
-    industry: { label: 'Textile Manufacturing', category: 'manufacturing' },
+    externalLink: "https://helmtex.co.za",
+    clientLogo: "/logos/helmlogo.png",
+    tags: ["Vue.js", "Firebase", "Tailwind CSS"],
+    industry: { label: "Textile Manufacturing", category: "manufacturing" },
   },
+  {
+    title: "Helm Textile Mills",
+    description: "Vue-based platform for tracking production and logistics.",
+    icon: <SiNextdotjs className="h-6 w-6 text-white" />,
+    link: null,
+    externalLink: "https://helmtex.co.za",
+    clientLogo: "/logos/helmlogo.png",
+    tags: ["Vue.js", "Firebase", "Tailwind CSS"],
+    industry: { label: "Textile Manufacturing", category: "manufacturing" },
+  },
+  {
+    title: "3D Parallax Portfolio",
+    description: "A creative animated portfolio built with React Three Fiber.",
+    icon: <SiReact className="h-6 w-6 text-blue-500" />,
+    link: "https://your-portfolio-link.com",
+    sourceCode: "https://github.com/koketso/galaxy-portfolio",
+    demo: "https://koketso.dev",
+    tags: ["React", "Three.js", "Framer Motion"],
+    industry: { label: "Personal Branding", category: "personal" },
+  },
+
+  {
+    title: "3D Parallax Portfolio",
+    description: "A creative animated portfolio built with React Three Fiber.",
+    icon: <SiReact className="h-6 w-6 text-blue-500" />,
+    link: "https://your-portfolio-link.com",
+    sourceCode: "https://github.com/koketso/galaxy-portfolio",
+    demo: "https://koketso.dev",
+    tags: ["React", "Three.js", "Framer Motion"],
+    industry: { label: "Personal Branding", category: "personal" },
+  },
+  {
+    title: "Helm Textile Mills",
+    description: "Vue-based platform for tracking production and logistics.",
+    icon: <SiNextdotjs className="h-6 w-6 text-white" />,
+    link: null,
+    externalLink: "https://helmtex.co.za",
+    clientLogo: "/logos/helmlogo.png",
+    tags: ["Vue.js", "Firebase", "Tailwind CSS"],
+    industry: { label: "Textile Manufacturing", category: "manufacturing" },
+  },
+
+  
 ];
 
 export default function ProjectsSection() {
@@ -65,7 +108,7 @@ export default function ProjectsSection() {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
-    const colors = ['white', 'blue', 'purple'];
+    const colors = ["white", "blue", "purple"];
     const generated = Array.from({ length: 50 }, () => ({
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -76,7 +119,7 @@ export default function ProjectsSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-black text-white px-8 py-20 overflow-hidden">
+    <section id="projects" className="relative min-h-screen bg-black text-white px-8 py-20 overflow-hidden">
       {/* 🌌 Twinkling Star Background */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {stars.map((star, i) => (
@@ -86,10 +129,10 @@ export default function ProjectsSection() {
             style={{
               top: star.top,
               left: star.left,
-              width: '2px',
-              height: '2px',
+              width: "2px",
+              height: "2px",
               backgroundColor: star.color,
-              animation: 'twinkle 3s infinite',
+              animation: "twinkle 3s infinite",
               animationDelay: star.animationDelay,
             }}
           />
@@ -144,7 +187,7 @@ export default function ProjectsSection() {
                         <FiUnlock className="h-4 w-4" />
                         Open Source
                       </div>
-                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full bg-green-100 text-green-800 text-[10px] sm:text-xs font-semibold shadow-lg animate-glow">
+                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full bg-green-100 text-green-900 text-[10px] sm:text-xs font-semibold shadow-lg animate-glow">
                         <FaGithub className="w-3 h-3 sm:w-4 sm:h-4" />
                         <span className="hidden xs:inline">Open Source</span>
                       </div>
@@ -169,7 +212,7 @@ export default function ProjectsSection() {
 
                   {project.industry && (
                     <div className={`inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full font-medium mb-4
-                      ${industryStyles[project.industry.category]?.color || 'bg-gray-200 text-gray-700'}`}>
+                      ${industryStyles[project.industry.category]?.color || "bg-gray-200 text-gray-700"}`}>
                       {industryStyles[project.industry.category]?.icon}
                       {project.industry.label}
                     </div>
@@ -242,7 +285,7 @@ export default function ProjectsSection() {
                               </a>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Opens the client's live site in a new tab</p>
+                              <p>Opens the client&pos;s live site in a new tab</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
